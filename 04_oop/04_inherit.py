@@ -68,6 +68,46 @@ acc_list = [
 
 for acc in acc_list:
     print(f"{acc.info()}")
+print()
 
 # 덕 타이핑 (Duck Typing)  -- "오리처림 행동하면 오리다!"라는 논리
 #   상속 관계가 없어도 같은 메서드를 가지면 동일하게 취급하는 특징
+class CsvExporter:
+    def export(self, data):
+        return f"csv로 {len(data)}건 저장"
+
+class JsonExporter:
+    def export(self, data):
+        return f"json으로 {len(data)}건 저장"
+
+exp_list = [
+    CsvExporter(),
+    JsonExporter()
+]
+
+data = [1, 2, 3]
+
+for exporter in exp_list:
+    print(f"{exporter.export(data)}")
+# 마치 다형성이 적용된 것처럼 각각의 메서드에 따른 결과 출력
+# Java: 공통 인터페이스로 구현
+# Python: 동일한 메서드 존재 여부만으로 실행 가능
+print("=" * 60)
+
+# 다중 상속: 여러 부모 클래스를 상속할 수 있음
+class Loggable:
+    def log(self, message):
+        return f"[LOG] {message}"
+
+class Serializable:
+    def to_dict(self):
+        return self.__dict__    # 모든 필드를 딕셔너리로 변환
+
+class Product(Loggable, Serializable):
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+p = Product("타포린백", 1000)
+print(f"{p.log('상품을 등록했습니다.')}")
+print(f"dict --> {p.to_dict()}")
