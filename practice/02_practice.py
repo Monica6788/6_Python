@@ -79,10 +79,17 @@ BMI: 22.86
 
 # def avg(numbers):
 #     # 함수 정의: 합계를 길이(개수)로 나누기 (실수형 나눗셈)
-#     # 위 계산의 몫을 소숫점 아래 둘째자리까지 반올림
-#     return round(sum(numbers) / len(numbers), 2)
+#     # 사용자가 수를 입력하지 않고 'q'를 입력하는 경우 0으로 나누게 되므로 if문으로 거르기
+#     if len(numbers) == 0:
+#         return "--> 값이 없습니다."
+#     else:
+#         # 위 계산의 몫을 소숫점 아래 둘째자리까지 반올림
+#         return f"평균: {round(sum(numbers) / len(numbers), 2)}"
 
-# print(f"평균: {avg(numbers)}")
+# print(avg(numbers))
+
+# # 복습 + 선생님 풀이와 분석 추가
+
 
 """
 ### 3. 단어 빈도수 분석 함수 정의
@@ -113,12 +120,13 @@ sentence = input("문장을 입력하세요: ")
 
 # 소문자로 바꾼 후 구분자(공백)로 쪼개어 리스트에 담기
 words = sentence.lower().split(" ")
-print(words)
-
-# 단어의 빈도수를 담을 딕셔너리 추가 (key: 단어, value: 빈도수)
-frequency = {}
+# print(words)
 
 def frequency_count(words):
+    # 단어의 빈도수를 담을 딕셔너리 추가 (key: 단어, value: 빈도수)
+    # frequency를 전역 변수로 하면 함수가 여러 번 호출됐을 때 값이 누적됨
+    # => 함수 내부로 이동
+    frequency = {}
     for word in words:
         frequency[word] = words.count(word)
     return frequency
