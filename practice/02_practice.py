@@ -79,7 +79,8 @@ BMI: 22.86
 
 # def avg(numbers):
 #     # 함수 정의: 합계를 길이(개수)로 나누기 (실수형 나눗셈)
-#     # 사용자가 수를 입력하지 않고 'q'를 입력하는 경우 0으로 나누게 되므로 if문으로 거르기
+#     # 복습: 사용자가 수를 입력하지 않고 'q'를 입력하는 경우 0으로 나누게 됨!
+#     #       if문으로 거르기
 #     if len(numbers) == 0:
 #         return "--> 값이 없습니다."
 #     else:
@@ -87,8 +88,6 @@ BMI: 22.86
 #         return f"평균: {round(sum(numbers) / len(numbers), 2)}"
 
 # print(avg(numbers))
-
-# # 복습 + 선생님 풀이와 분석 추가
 
 
 """
@@ -124,11 +123,27 @@ words = sentence.lower().split(" ")
 
 def frequency_count(words):
     # 단어의 빈도수를 담을 딕셔너리 추가 (key: 단어, value: 빈도수)
-    # frequency를 전역 변수로 하면 함수가 여러 번 호출됐을 때 값이 누적됨
-    # => 함수 내부로 이동
+    # 복습: frequency를 전역 변수로 하면 함수가 여러 번 호출됐을 때 값이 누적됨
+    #       => 함수 내부로 이동
     frequency = {}
     for word in words:
-        frequency[word] = words.count(word)
+        # frequency[word] = words.count(word)
+        # 복습: 리스트를 돌면서 매번 count를 호출하므로 비효율적임
+        #       get(word, 0) + 1을 사용하여 순회 한 번만에 빈도 체크
+        frequency[word] = frequency.get(word, 0) + 1
+        # 복습: .get(key, default)
+        #       딕셔너리에서 특정 키의 값을 가져올 때 사용!
+        # 복습: get(k, default)로 어떻게 수를 세는지?
+        #   ex) "python is python"이 입력된 문장일 경우
+        #       1. "python"
+        #           빈 딕셔너리이므로 "python"이라는 단어 없음
+        #           .get()이 기본값 0을 가져옴
+        #           +1을 하여 1이 되고, frequency["python"] = 1이 되어 {'python': 1} 저장
+        #       2. "is"
+        #           1과 동일한 로직 수행
+        #       3. "python"
+        #           .get()이 저장되어 있던 1을 꺼내고 + 1을 수행
+        #           {'python': 1} -> {'python': 2}로 수정됨
     return frequency
 
 # 튜플 형태로 키와 밸류를 받아서 튜플의 두 번째 값(빈도수)에 따라 정렬
@@ -157,22 +172,26 @@ for k, v in by_frequency:
 3게임: [5, 11, 21, 22, 38, 45]
 ```
 """
-# print("=" * 60)
-# print(f"{'4번':^60}")
-# print("=" * 60)
+print("=" * 60)
+print(f"{'4번':^60}")
+print("=" * 60)
 
-# def lotto_numbers():
-#     # 로또 번호를 담을 빈 집합
-#     lotto = set()
-#     for i in range(1, 7):
-#         lotto.add(random.randint(1, 45))
-#         i += 1
-#     return sorted(list(lotto))
+def lotto_numbers():
+    # 로또 번호를 담을 빈 집합
+    lotto = set()
 
-# times = int(input("구매할 로또 게임 수를 입력하세요: "))
-# print("[로또번호 발급 결과]")
-# for i in range(1, times + 1):
-#     print(f"{i}게임: {lotto_numbers()}")
+    # 복습: 기존의 for문 사용 시 랜덤 정수 여러 개가 같은 수로 나왔을 때 결과 리스트에
+    #       값이 6개보다 적어질 수 있음! len(lotto)를 사용하여 길이가 6개가 될 때까지 반복
+    while len(lotto) < 6:
+    # 헷갈리는 부분: 로또번호 셋의 개수가 6개 미만일 때 실행해야
+    #                한 번 더 실행 후 6개가 되고, 이후에 종료함.
+        lotto.add(random.randint(1, 45))
+    return sorted(list(lotto))
+
+times = int(input("구매할 로또 게임 수를 입력하세요: "))
+print("[로또번호 발급 결과]")
+for i in range(1, times + 1):
+    print(f"{i}게임: {lotto_numbers()}")
     
 
 """
@@ -202,36 +221,41 @@ for k, v in by_frequency:
 - 전체 평균: 86.0점
 ```
 """
-# print("=" * 60)
-# print(f"{'5번':^60}")
-# print("=" * 60)
+print("=" * 60)
+print(f"{'5번':^60}")
+print("=" * 60)
 
 # 이름과 점수를 담을 딕셔너리
-# students = [
-#     {"name": "Dante", "score": 55},
-#     {"name": "Nero", "score": 75},
-#     {"name": "Kyrie", "score": 95},
-#     {"name": "Nico", "score": 80}
-# ]
-# def score_analysis(scores):
-#     scores = [student.get("score") for student in students]
-#     avg = sum(scores) / len(scores)
-#     return max(scores), min(scores), avg
+students = {
+    "Dante": 55,
+    "Nero": 75,
+    "Kyrie": 95,
+    "Nico": 80
+}
 
-# max, min, avg = score_analysis(students)
-# print("========== 학생 성적 분석 결과 ==========")
-# print(max, min, avg)
+# 복습: 여러 개의 보조 함수 정의 대신 튜플을 반환하는 함수 하나만 정의
+def score_analysis(scores):
+    # scores가 비어 있을 때, 즉 falsy 값일 때
+    if not scores:
+        # best_student, worst_student, avg를 각각 None, None, 0.0으로 반환
+        return None, None, 0.0
+    best_student = max(scores.items(), key=lambda x: x[1])
+    # 복습 
+    #   scores.items(): scores 딕셔너리의 k:v를 가져와서,
+    #   key=lamda x:x[1]: x(scores의 항목들)의 1번인덱스(성적)를 기준으로
+    #   max(): 최댓값 구하기
+    worst_student = min(scores.items(), key=lambda x: x[1])
+    avg = sum(scores.values()) / len(scores)
 
-# 데이터 예시 잘못 봐서 다시...
+    return best_student, worst_student, round(avg, 2)
 
-# 이름과 점수를 담을 딕셔너리
-# students = {
-#     "Dante": 55,
-#     "Nero": 75,
-#     "Kyrie": 95,
-#     "Nico": 80
-# }
+best_student, worst_student, avg = score_analysis(students)
+print("========== 학생 성적 분석 결과 ==========")
+print(f"- 최고 득점자: {best_student[0]} ({best_student[1]}점)")
+print(f"- 최저 득점자: {worst_student[0]} ({worst_student[1]}점)")
+print(f"- 전체 평균 : {avg}점")
 
+      
 # scores = students.values()
 
 # def get_max_score(students):
@@ -258,4 +282,4 @@ for k, v in by_frequency:
 # print("========== 학생 성적 분석 결과 ==========")
 # print(f"- 최고 득점자: {max_name} ({max_score}점)")
 # print(f"- 최저 득점자: {min_name} ({min_score}점)")
-# print(f"- 평균: {avg}점")
+# print(f"- 전체 평균: {avg}점")
