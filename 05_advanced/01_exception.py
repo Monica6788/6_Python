@@ -71,10 +71,10 @@ print(park)
 for amount in [5000, 60000, -3000]:
     try:
         park.withdraw(amount)
-    except InvalidAmountError as ivae:
-        print(ivae)
+    except InvalidAmountError as iae:
+        print(f"출금 실패: {iae}")
     except NoBalanceError as nbe:
-        print(nbe)
+        print(f"출금 실패: {nbe}")
     else:
         print(f"{amount:,}원이 출금되었습니다. (잔액: {park.balance:,}원)")
         
