@@ -72,5 +72,12 @@ class Playlist:
                 self.list.remove(music)
                 return
 
+# TODO 같은 노래를 중복하여 추가할 경우에 방어하는 로직이 없음
+
+    # 음악 중복 검사 (제목, 가수명 일치 시 추가/수정 불가능)
+    def duplicate_check(self, title, artist):
+        for music in self.list:
+            if music.title == title and music.artist == artist:
+                raise models.DuplicateMusicError(title, artist)
         
 

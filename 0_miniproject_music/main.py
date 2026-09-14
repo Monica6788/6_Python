@@ -42,7 +42,7 @@ while True:
                         now_playing = music
                         break
                 if now_playing:
-                    print(now_playing.play())
+                    print(now_playing.play().strip())
                     print("-" * 30)
                 else:
                     print("재생 오류입니다.")

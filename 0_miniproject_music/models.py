@@ -46,7 +46,7 @@ class Podcast(Music):
     def play(self):
         return f"""
         ID: {self.id} | [{self.title}] {self.artist} {self.tl}
-        {self.host}의 {self.ep_num}번 에피소드의 곡을 재생 중입니다.)"""
+        {self.host}의 {self.ep_num}번 에피소드의 곡을 재생 중입니다."""
 
 class MusicNotFoundError(Exception):
     """음악을 찾을 수 없을 떄 발생하는 예외"""
@@ -55,11 +55,14 @@ class MusicNotFoundError(Exception):
         self.id = id
 
 class DuplicateMusicError(Exception):
-    def __init__(self, id):
+    """중복된 음악이 추가될 때 발생하는 예외"""
+    def __init__(self, title, artist):
         super().__init__("이미 추가한 곡입니다.")
-        self.id = id
+        self.title = title
+        self.artist = artist
 
 class NoMusicInListError(Exception):
-    def __init__(self, list):
-        super().__init__("플레이리스트에 추가된 곡이 없습니다.")
+    """목록에 곡이 없거나 검색결과가 없을 때 발생하는 예외"""
+    def __init__(self, list, message = "플레이리스트에 추가된 곡이 없습니다."):
+        super().__init__(message)
         self.list = list
