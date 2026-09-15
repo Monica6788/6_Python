@@ -109,3 +109,26 @@ def parse_stocks(html):
             }
         )
     return results
+
+
+# 선택한 섹터의 stock 목록 파서 ()
+def parse_stocks_by_sector(html, sector="", market="", q=""):
+    """
+        선택한 섹터의 주식 목록 전체 HTML 문자열을 통해,
+        필요한 데이터만 추출하여 딕셔너리 리스트로 반환해주는 함수
+    """
+    soup = BeautifulSoup(html, 'lxml')
+    results = []
+    for row in soup.select("tr.stock-row"):
+        if get_text(row, "td.col-sector") == sector:
+            results.append({
+                "code": get_text(row, "td.col-code"),
+                "name": get_text(row, "td.col-name a"),
+                "sector": get_text(row, "td.col-sector"),
+                "price": get_number(row, "td.col-price"),
+                "rate": parse_rate(get_text(row, "td.col-change")),
+                "volume": get_number(row, "td.col-volume"),
+                "market": get_text(row, "td.col-market span"),
+                "link": urljoin(BASE, get_attr(row, "td.col-name a", "href"))
+            })
+    return results
