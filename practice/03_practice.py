@@ -36,5 +36,3 @@ print(f"{'코드':<8}{'종목명':<14}{'섹터':<10}{'현재가':>12}{'등락률
 print("-" * 75)
 for s in it_service_stocks:
     print(f"{s['code']:<8}{s['name']:<14}{s['sector']:<10}{s['price']:>12}{s['rate']:>9}")
-
-print("-" * 75)

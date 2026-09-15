@@ -114,8 +114,7 @@ def parse_stocks(html):
 # 선택한 섹터의 stock 목록 파서 ()
 def parse_stocks_by_sector(html, sector="", market="", q=""):
     """
-        선택한 섹터의 주식 목록 전체 HTML 문자열을 통해,
-        필요한 데이터만 추출하여 딕셔너리 리스트로 반환해주는 함수
+        선택한 섹터의 주식 항목만 리스트에 담아 반환하는 함수
     """
     soup = BeautifulSoup(html, 'lxml')
     results = []
