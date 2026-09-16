@@ -111,4 +111,22 @@ def load_column(name):
 
     return _read(name, dtype).reshape(120, 750)
 
+# 고의적으로 NAN(결측)을 채울 데이터의 index
+_NAN_IDX = np.array([37, 88, 142, 199, 242, 301, 358, 412, 470, 537, 618, 703])
+# 고의적으로 이상치를 채울 데이터의 인덱스
+_OUTLIER_IDX = np.array([33, 61, 215, 488, 724])
+# _OUTLIER_IDX에 곱할 값
+_OUTLIER_SCALE = np.array([6.2, 4.3, 7.8, 5.9, 7.1])
+
+def load_dirty():
+    """
+        결측, 이상치용 데이터
+
+        첫 종목의 종가 데이터에 결측 12개, 이상치 5개 추가
+    """
+    arr = load_one_stock(0).astype("float64")
+    arr[_NAN_IDX] = np.nan
+    arr[_OUTLIER_IDX] = arr[_OUTLIER_IDX] * _OUTLIER_SCALE
+
+    return arr, np.sort(_NAN_IDX), np.sort(_OUTLIER_IDX)
 
