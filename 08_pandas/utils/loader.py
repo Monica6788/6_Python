@@ -23,7 +23,7 @@ def load_csv(dedup=True):
             # df.drop_duplicates: subset 설정 기준 중복 데이터 제거
             #   - subset: 중복을 제거할 기준 열
             #   - keep: 먼저 나온 데이터(first), 마지막 데이터(last), 모두 제거(False)
-            df.drop_duplicates(subset=['code', 'date'], keep='first')
+            df = df.drop_duplicates(subset=['code', 'date'], keep='first')
 
     # sort_values: 제시한 컬럼을 기준으로 정렬 -> 인덱스가 섞일 수 있음
     # reset_index(drop=True): 인덱스를 다시 0, 1, 2, ...로 지정해줌

@@ -14,7 +14,6 @@ print(f"{'=' * 33} 마지막 거래일 {'=' * 33}")
 last_day = df['date'].max()
 day = df[df['date'] == last_day].reset_index(drop=True)
 print(day.head())
-print(last_day)
 print()
 
 # 새로운 열(컬럼) 추가
@@ -43,12 +42,11 @@ print()
 #   문자열 메서드를 모든 행에 일괄 적용할 때 사용
 print(f"{'=' * 22} .str 접근자 {'=' * 22}")
 print("     : 문자열 메서드를 모든 행에 일괄 적용할 때 사용")
+
 print(f"길이 len() -> {day['code'].str.len()}")
 print(f"길이 len() -> {day['code'].str.len().unique().tolist()}")
 print(f"슬라이싱 -> {day['code'].str[1:].head(3).tolist()}")     # 코드에서 G 빼고 숫자만
-uq = day.drop_duplicates(subset=["code"])
-print(f"G00으로 시작하는 종목 코드 개수 -> {uq['code'].str.startswith('G00').sum()} 개")
-print(day[day['code'].str.startswith('G00')]['code'].tolist())
+print(f"G00으로 시작하는 종목 코드 개수 -> {day['code'].str.startswith('G00').sum()} 개")
 print()
 
 sample = pd.Series(["    가온전자  ", "해피 바이오", "한빛중공업"])
