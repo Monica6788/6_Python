@@ -17,7 +17,7 @@ print(f"ndim : {arr.ndim}차원 / shape: {arr.shape}")
 """
     2. np.arange()를 이용해 0부터 20까지의 짝수로 이루어진 배열을 생성하시오.
 """
-evens = np.arange(0, 20, 2)
+evens = np.arange(0, 21, 2)
 print(evens)
 
 """
@@ -33,7 +33,28 @@ print(f"{mask} / {arr3[mask]}")
 """
 list4 = [[10, 20, 30], [40, 50, 60], [70, 80, 90]]
 arr4 = np.array(list4)
-print(f"2번째 행: {arr4[1::2, :]}")
+# 인덱싱: 2번째 행 전체를 가져오기
+#   => 1차원 배열 형태 (3,)
+print(arr4[1])
+
+# 슬라이싱
+
+# 1 이상 2 미만, 1 간격으로 행 슬라이싱 => 1행만 추출
+#   => 2차원 형태인 (1, 3) 유지
+print(arr4[1:2:1]) 
+
+# 1행만 슬라이싱
+# 위의 결과인 [[40, 50, 60]]에 다시 행 기준 슬라이싱 함
+# 현재 행이 1개라서 0 ~ 3 범위 지정 시 그대로 나옴 => (1, 3) 형태
+print(arr4[1:2][0:3:1])
+
+# [1:2]는 행 슬라이싱, [0:3:1]은 열 슬라이싱 => (1, 3) 형태
+print(arr4[1:2, 0:3:1])
+
+# 열 범위는 전체 범위이므로 생략, 행만 슬라이싱 => (1, 3) 형태
+print(arr4[1:2])
+
+print(f"2번째 행: {arr4[1:2, :]}")
 
 
 """
@@ -109,9 +130,14 @@ row_means = matrix.mean(axis=1, keepdims=True)
 # 날짜별(열별) 평균
 col_means = matrix.mean(axis=0, keepdims=True)
 
+# 자기 평균을 뺀 배열
+diff_by_row = matrix - row_means
+
 print(f"{'=' * 29} {'종목별 평균'} {'=' * 29}")
 print(f"{row_means.reshape(row_means.size,)} (형태: {row_means.reshape(row_means.size,).shape}\n)")
 
 print(f"{'=' * 29} {'날짜별 평균'} {'=' * 29}")
 print(f"{col_means.reshape(col_means.size,)} (형태: {col_means.reshape(col_means.size,).shape}\n)")
+
 print(f"{(matrix - row_means).mean().astype(int)}")
+print(f"{diff_by_row.shape} \n{diff_by_row}")
