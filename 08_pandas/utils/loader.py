@@ -2,7 +2,7 @@
     실습용 데이터 로더 (데이터를 읽어오는 역할)
 """
 import pandas as pd
-from utils.config import RAW_PATH, ENCODING
+from utils.config import RAW_PATH, ENCODING, path
 # 현재 같은 패키지에 있어서 from .config도 가능하지만,
 # 실행 환경에 따라 달라지지 않도록 패키지 경로까지 작성.
 
@@ -31,3 +31,21 @@ def load_csv(dedup=True):
     # 정렬한 후에 인덱스가 뒤죽박죽이 되지 않도록 reset_index()
     # 원래 인덱스를 버리기 위해 drop=True
     return df.sort_values(["code", "date"]).reset_index(drop=True)
+
+def load_prices():
+    """prices.csv 파일을 읽어서 df로 반환"""
+    return pd.read_csv(path("prices.csv"), encoding=ENCODING)
+
+def load_companies(raw=False):
+    """
+        raw=True일 때는 raw-companies.csv
+        raw=False일 때는 companies.csv 파일을 읽어서 df로 반환
+        
+        companies.csv => 정제본. 결측 0.
+        raw-companies.csv => 오염본 (공백, 대소문자, 중복, 전각 존재)
+    """
+    if raw:
+        return pd.read_csv(path('raw-companies.csv'), encoding=ENCODING,
+                    dtype=str, keep_default_na=False)
+    else:
+        return pd.read_csv(path('companies.csv'), encoding=ENCODING)

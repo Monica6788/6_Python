@@ -1,1 +1,6 @@
 venv
+
+# 파일 실습용
+_sample*
+stocks.*
+*.pkl
