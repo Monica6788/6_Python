@@ -4,7 +4,7 @@
 # 정규표현식을 쓰기 위한 모듈 re
 import re
 from bs4 import BeautifulSoup
-from config import BASE
+from practice.practice_03.config import BASE
 # urljoin 함수만 import
 from urllib.parse import urljoin
 

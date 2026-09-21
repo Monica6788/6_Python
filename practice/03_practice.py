@@ -6,7 +6,7 @@
 """
 import requests
 from bs4 import BeautifulSoup
-from config import BASE, TIMEOUT, HEADERS
+from practice.practice_03.config import BASE, TIMEOUT, HEADERS
 from parsers import parse_stocks, parse_stocks_by_sector
 
 resp = requests.get(f"{BASE}/stocks?sector=S08&market=&q=", headers=HEADERS, timeout=TIMEOUT)

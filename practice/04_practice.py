@@ -5,7 +5,7 @@
 # =========== 이곳에 필요한 모듈 import 한 후 실행 ===========
 import numpy as np
 
-from load_utils import load_one_stock, load_dates, load_codes, load_matrix
+from practice.practice_03.load_utils import load_one_stock, load_dates, load_codes, load_matrix
 
 """
     1. 다음 리스트 [1, 2, 3, 4, 5]를 ndarray로 변환하고,
