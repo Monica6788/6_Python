@@ -35,7 +35,7 @@ RAW_DDL = """
         close VARCHAR2(20),
         volume VARCHAR2(20),
         "change" VARCHAR2(20),
-        changeRate VARCHAR2(20),
+        "changeRate" VARCHAR2(20),
         -- 수집 시간이나 출처 등 따로 필요한 정보는 자유롭게 추가
         -- CURRENT_TIMESTAMP: SYSDATE의 TIMESTAMP 버전
         collected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -153,7 +153,7 @@ CLEAN_DDL = """
         close NUMBER(20),
         volume NUMBER(20),
         "change" NUMBER(20),
-        changeRate NUMBER(6, 2),
+        "changeRate" NUMBER(6, 2),
         -- 수집 시간이나 출처 등 따로 필요한 정보는 자유롭게 추가
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT uk_code_date UNIQUE (code, "date")
