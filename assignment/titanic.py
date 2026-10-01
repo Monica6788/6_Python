@@ -176,7 +176,7 @@ print()
   - map(), replace(), apply() 중 편한 방식을 사용해도 됩니다.
 """
 gender_encoded = df.copy()
-# gender_encoded["Gender_Encoded"] =
+gender_encoded["Gender_Encoded"] = np.where(gender_encoded["Sex"] == "male", 0, 1)
 
 # ===========================================================================
 """
