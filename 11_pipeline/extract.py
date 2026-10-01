@@ -52,39 +52,47 @@ def from_api(logger, max_pages=MAX_PAGES):
                 # 네트워크 단절, 타임아웃 등 통신 자체에 실패 시 예외 처리
                 # WARNING 레벨로 출력
                 logger.warning(f"page {page} 요청 실패: {type(e).__name__}")
-                failed.append(page)
+                failed.append(page)         # 실패한 페이지 넘버 기록
                 # 예외 처리 후에도 프로그램이 멈추지 않고 동작되도록 처리
-                # 즉, 다음 페이지로 계속 진행
+                # 즉, 이번 페이지는 건너뛰고 다음 페이지로 계속 진행
                 continue
 
             # 상태코드 확인. 200이 아니면 파싱 작업 패스.
             if resp.status_code != 200:
                 logger.warning(f"page {page} 상태코드 {resp.status_code}")
                 failed.append(page)
-                # 예외 처리 후에도 프로그램이 멈추지 않고 동작되도록 처리
+                # 데이터 파싱을 건너뛰고 다음 페이지로 계속 진행
                 continue
 
             # 응답 본문 (JSON 문자열) -> dict 변환
             body = resp.json()
+            # or 활용
+            # : 가져온 데이터가 비어 있거나 None이면 빈 list 반환
             items = body.get("items") or []
 
             if not items:
-                # 응답 본문이 비어 있을 경우, 더 이상 데이터가 없음.
+                # 응답 본문이 비어 있을 경우, 더 이상 데이터가 없음을 의미.
                 # INFO 레벨로 출력
                 logger.info(f"page {page} 0건 - 종료")
+                # 불필요한 추가 요청을 막기 위해 for문 탈출
                 break
 
             # 리스트.extend(추가할_리스트): 리스트 합치기
+            # rows 리스트에 새로 받아온 items 리스트 이어붙이기
             rows.extend(items)
+            # 이번 페이지에서 가져온 건수: len(items)
+            # 현재까지 누적된 건수: len(rows)
             logger.info(f"page {page} {len(items)}건 (누적 {len(rows)})")
 
-            # 요청 간 대기 시간 설정
+            # 요청 간 대기 시간 설정 (서버 과부하 방지)
             time.sleep(DELAY)
 
+        # failed가 not falsy일 경우,
+        # 즉, 실패했던 페이지가 하나라도 있을 경우 경고 로그 출력
         if failed:
             logger.warning(f"실패한 페이지: {failed}")
 
-        # 성공한 데이터 rows와 실패한 페이지 목록 failed 반환
+        # 수집에 성공한 데이터 rows와 실패한 페이지 목록 failed 반환
         return rows, failed
 
 def from_csv(logger, path=None):
@@ -100,10 +108,8 @@ def from_csv(logger, path=None):
             failed  : 실패 페이지 목록.
                       페이지 정보가 없으므로 빈 list 반환.
     """
-    rows, failed = [], []
-
     # path가 생략되었을 경우(즉, path=None)
-    # 원본 파일 경로(raw_prices_path)로 기본 경로 설정
+    # 원본 파일 경로(raw_prices_path())로 기본 경로 설정
     # path = path if path is not None else raw_prices_path()
     # 위에는 혼자 써본 것, 아래는 실습 코드
     path = path or raw_prices_path()
@@ -111,9 +117,13 @@ def from_csv(logger, path=None):
     # 저장된 데이터를 그대로 유지해서 읽어오기
     # 이 시점에 로그 기록 
     # logger.info()까지만 작성해봤고 아래는 실습코드
-    df = pd.read_csv(path, encoding=ENCODING, 
+    df = pd.read_csv(path, encoding=ENCODING,
+                     # dtype=str : 모든 데이터를 str 원본으로 읽어오기
+                     # keep_default_na=False: 빈칸을 자동 NaN 처리 하지 않음
                      dtype=str, keep_default_na=False)
+    # 파일 경로와 읽어온 데이터 행 수 로그 기록
     logger.info(f"{path}로부터 {len(df):,}행 읽음")
 
-    # dict 형태로 반환
+    # 저장한 df를 dict 형태로 변환하여 반환
+    # CSV에는 페이지 개념이 없으므로 실패 목록은 빈 목록으로 반환
     return df.to_dict("records"), []
