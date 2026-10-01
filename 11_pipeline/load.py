@@ -45,7 +45,7 @@ UPSERT = f"""
 MERGE INTO daily_price dst
 USING (SELECT {MERGE_USING} FROM dual) src
 ON (dst.code = src.code AND
-    dst."date" = src."date)
+    dst."date" = src."date")
 WHEN MATCHED THEN
     UPDATE SET dst.open         = src.open,
                dst.high         = src.high,
