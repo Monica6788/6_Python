@@ -1,6 +1,7 @@
 """
     20261002_데이터분석_이고은
 """
+import os
 import numpy as np
 import pandas as pd
 import platform
@@ -12,6 +13,8 @@ import seaborn as sns
 
 from pathlib import Path
 from matplotlib import font_manager
+
+BASE_DIR = Path(__file__).resolve().parent
 
 # round 함수 누락일 경우를 대비하여 옵션 설정
 pd.set_option("display.float_format", "{:.2f}".format)
@@ -61,7 +64,7 @@ setup()
 """
 1. pandas를 사용하여 train.csv 파일 데이터를 불러와 DataFrame 으로 저장하시오.
 """
-df = pd.read_csv("train.csv", encoding="utf-8-sig")
+df = pd.read_csv(BASE_DIR / "train.csv", encoding="utf-8-sig")
 
 # ===========================================================================
 """
