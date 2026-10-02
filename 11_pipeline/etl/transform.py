@@ -13,7 +13,7 @@
 """
 import pandas as pd
 
-from extract import from_api, from_csv
+from .extract import from_api, from_csv
 
 # 수치형(숫자)으로 변환한 열 목록
 NUM_COLS = ["open", "high", "low","close", 

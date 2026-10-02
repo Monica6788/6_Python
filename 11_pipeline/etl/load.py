@@ -7,7 +7,7 @@
 """
 import time
 
-from config import connect, CHUNK_SIZE
+from .config import connect, CHUNK_SIZE
 
 # DB에 저장할 컬럼 순서
 COLS = ["code", "date", "open", "high", "low", "close", 
@@ -139,13 +139,43 @@ def verify(df, logger):
         - 날짜 최소
         - 날짜 최대
     """
-    expected = df[COLS].copy()
-    # actual = 
+    conn = connect()
 
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT COUNT(*)
+                   COUNT(DISTINCT code),
+                   SUM(close),
+                   MIN("date"),
+                   MAX("date"),
+            FROM daily_price
+        """)
+        row = cur.fetchone()
+    conn.close()
+
+    # 위의 쿼리문 실행 결과를 row라는 튜플로 관리 (DB결과)
+    n, codes, close_sum, min_d, max_d = row
+
+    def to_date_str(v):
+        """전달된 datetime 데이터의 날짜만 추출하여 문자열로 반환"""
+        # TODO value라서 v?
+        return str(v.date() if hasattr(v, "date") else str(v))
+
+    # {"검증항목명": {df기준_결과, db기준_결과}, ...}
     checks = [
-        ("행 수", len(expected)),
-        ("종목코드 수", expected['code'].nunique(), ),
-        ("종가 합계", expected['close'].mean(), ),
-        ("최소 날짜", expected['date'].min(), ),
-        ("최대 날짜", expected['date'].max(), ),
+        ("행 수", len(df), n),
+        ("종목코드 수", df["code"].nunique(), codes),
+        ("종가 합계", int(df["close"].sum()), int(close_sum)),
+        ("최소 날짜", str(df['date'].min()), to_date_str(min_d)),
+        ("최대 날짜", str(df['date'].max()), to_date_str(max_d)),
     ]
+
+    all_ok = True
+    # exp: expected, act: actual
+    for name, (exp, act) in checks.items():
+        ok = str(exp) == str(act)
+        all_ok &= ok
+
+        logger.info(f"{'OK' if ok else 'FAIL'} {name:<12} {exp} / {act}")
+    
+    return all_ok

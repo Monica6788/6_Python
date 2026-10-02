@@ -5,7 +5,7 @@
 """
 import os
 
-from _db import (connect, get_engine, ENCODING, KHLAB_BASE, 
+from ._db import (connect, get_engine, ENCODING, KHLAB_BASE, 
                  data_path, prices_path, raw_prices_path)
 
 # --------------------- 환경 변수 기반 설정 ---------------------
