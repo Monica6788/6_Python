@@ -51,7 +51,7 @@ def from_api(logger, max_pages=MAX_PAGES):
             except requests.RequestException as e:
                 # 네트워크 단절, 타임아웃 등 통신 자체에 실패 시 예외 처리
                 # WARNING 레벨로 출력
-                logger.warning(f"page {page} 요청 실패: {type(e).__name__}")
+                logger.warning(f"   page {page} 요청 실패: {type(e).__name__}")
                 failed.append(page)         # 실패한 페이지 넘버 기록
                 # 예외 처리 후에도 프로그램이 멈추지 않고 동작되도록 처리
                 # 즉, 이번 페이지는 건너뛰고 다음 페이지로 계속 진행
@@ -59,7 +59,7 @@ def from_api(logger, max_pages=MAX_PAGES):
 
             # 상태코드 확인. 200이 아니면 파싱 작업 패스.
             if resp.status_code != 200:
-                logger.warning(f"page {page} 상태코드 {resp.status_code}")
+                logger.warning(f"   page {page} 상태코드 {resp.status_code}")
                 failed.append(page)
                 # 데이터 파싱을 건너뛰고 다음 페이지로 계속 진행
                 continue
@@ -73,7 +73,7 @@ def from_api(logger, max_pages=MAX_PAGES):
             if not items:
                 # 응답 본문이 비어 있을 경우, 더 이상 데이터가 없음을 의미.
                 # INFO 레벨로 출력
-                logger.info(f"page {page} 0건 - 종료")
+                logger.info(f"  page {page} 0건 - 종료")
                 # 불필요한 추가 요청을 막기 위해 for문 탈출
                 break
 
@@ -82,7 +82,7 @@ def from_api(logger, max_pages=MAX_PAGES):
             rows.extend(items)
             # 이번 페이지에서 가져온 건수: len(items)
             # 현재까지 누적된 건수: len(rows)
-            logger.info(f"page {page} {len(items)}건 (누적 {len(rows)})")
+            logger.info(f"  page {page} {len(items)}건 (누적 {len(rows)})")
 
             # 요청 간 대기 시간 설정 (서버 과부하 방지)
             time.sleep(DELAY)
@@ -90,7 +90,7 @@ def from_api(logger, max_pages=MAX_PAGES):
         # failed가 not falsy일 경우,
         # 즉, 실패했던 페이지가 하나라도 있을 경우 경고 로그 출력
         if failed:
-            logger.warning(f"실패한 페이지: {failed}")
+            logger.warning(f"   실패한 페이지: {failed}")
 
         # 수집에 성공한 데이터 rows와 실패한 페이지 목록 failed 반환
         return rows, failed
@@ -122,7 +122,7 @@ def from_csv(logger, path=None):
                      # keep_default_na=False: 빈칸을 자동 NaN 처리 하지 않음
                      dtype=str, keep_default_na=False)
     # 파일 경로와 읽어온 데이터 행 수 로그 기록
-    logger.info(f"{path}로부터 {len(df):,}행 읽음")
+    logger.info(f"  {path}로부터 {len(df):,}행 읽음")
 
     # 저장한 df를 dict 형태로 변환하여 반환
     # CSV에는 페이지 개념이 없으므로 실패 목록은 빈 목록으로 반환

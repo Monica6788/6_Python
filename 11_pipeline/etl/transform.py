@@ -41,7 +41,7 @@ def clean_prices(records, logger):
     # 1. DataFrame 변환
     df = pd.DataFrame(records)
     # 1-1. 로그 기록 (최초 입력 데이터 행 수)
-    logger.info(f"입력 P{len(df):,}행")
+    logger.info(f"  입력 {len(df):,}행")
 
     # 2. 숫자 타입 정제 
     #    콤마 제거: 1,000 -> 1000
@@ -74,7 +74,7 @@ def clean_prices(records, logger):
     df["code"] = df["code"].astype(str).str.upper().str.strip()
 
     # 4-1. 로그 기록 (타입 정제 후 데이터 행 수)
-    logger.info(f"타입 정제 {len(df):,}행")
+    logger.info(f"  타입 정제 {len(df):,}행")
 
     # 5. 중복 제거
     #    타입 정제 후 중복 데이터의 존재를 확인해야 함.
@@ -84,7 +84,7 @@ def clean_prices(records, logger):
 
     # 5-1. 로그 기록 (중복 제거 후 행 수, 줄어든 건수)
     #   {len(df) - before:+,} : +로 부호 표시, ,로 콤마 표시
-    logger.info(f"중복 제거 {len(df):,}행 ({len(df) - before:+,})")
+    logger.info(f"  중복 제거 {len(df):,}행 ({len(df) - before:+,})")
 
     # 6. 이상치 탐지
     # 종목별 날짜순으로 정렬 후 인덱스 재정렬
@@ -129,7 +129,7 @@ def clean_prices(records, logger):
     df["volume"] = pd.to_numeric(df["volume"], errors="coerce")
 
     # 6-1. 로그 기록 (이상치로 처리된 행 수)
-    logger.info(f"이상치 탐지/처리 {len(df):,}행"
+    logger.info(f"  이상치 탐지/처리 {len(df):,}행"
                 f" ({n_out:,}건 -> NaN)")
 
     # 7. 결측 보간
@@ -147,7 +147,7 @@ def clean_prices(records, logger):
     # 8. OHLC 정합성 - clip 
     #   (주가 데이터의 논리적 무결성 보장)
     # 8-1. 정합성 처리 전 로그 기록
-    logger.info(f"OHLC 정합성 처리 전"
+    logger.info(f"  OHLC 정합성 처리 전"
                 f" (종가 결측: {df['close'].isna().sum():,}건)")
     
     # clip(lower=..., upper=...): 값의 범위를 자르는 메서드
@@ -155,7 +155,7 @@ def clean_prices(records, logger):
     df["close"] = df["close"].clip(lower=df["low"], upper=df["high"])
 
     # 8-2. 정합성 처리 후 로그 기록
-    logger.info(f"OHLC 정합성 처리 후"
+    logger.info(f"  OHLC 정합성 처리 후"
                 f" (종가 결측: {df['close'].isna().sum():,}건)")
     
     # 9. 반올림
@@ -174,7 +174,7 @@ def clean_prices(records, logger):
         # 기본값이 0이긴 한데 그냥 명시해줌.
         df[col] = df[col].round(0)
     # 9-1. 로그 기록 (반올림 처리 후 행 수, 처리 대상 수)
-    logger.info(f"정수 반올림 처리 {len(df):,}행 (처리 대상: {n_round}개)")
+    logger.info(f"  정수 반올림 처리 {len(df):,}행 (처리 대상: {n_round}개)")
 
     # 10. 등락, 등락률 재계산
     #    (비즈니스 로직 정합성 확보)
@@ -230,7 +230,7 @@ def validate(df, logger):
 
     # 로그 기록
     for name, ok in checks:
-        logger.info(f"{'[OK]' if ok else '[FAIL]'} {name}")
+        logger.info(f"  {'[OK]' if ok else '[FAIL]'} {name}")
 
     if failed:
         raise ValueError(f"검증 실패: {failed}")

@@ -20,7 +20,7 @@ def _quote(c):
         Args.
             c: 컬럼명
     """
-    return f'"{c}' if c in ("date", "change", "changeRate") else c
+    return f'"{c}"' if c in ("date", "change", "changeRate") else c
 
 # -------------------- SQL 조각 --------------------
 # 컬럼 목록 문자열
@@ -44,7 +44,7 @@ MERGE_USING = ", ".join(f":{i + 1} AS {_quote(c)}"
 UPSERT = f"""
 MERGE INTO daily_price dst
 USING (SELECT {MERGE_USING} FROM dual) src
-ON (dst.code = src.code AND
+ON (dst.code   = src.code AND
     dst."date" = src."date")
 WHEN MATCHED THEN
     UPDATE SET dst.open         = src.open,
@@ -55,7 +55,7 @@ WHEN MATCHED THEN
                dst."change"     = src."change",
                dst."changeRate" = src."changeRate"
 WHEN NOT MATCHED THEN
-    INSERT {COL_SQL}
+    INSERT ({COL_SQL})
     VALUES (src.code, src."date", src.open, 
             src.high, src.low, src.close, src.volume, 
             src."change", src."changeRate")
@@ -107,7 +107,7 @@ def to_db(df, logger, chunk=CHUNK_SIZE):
     except Exception:
         conn.rollback()
         # 실패한 데이터의 인덱스 범위 -> WARNING 레벨 로그 기록
-        logger.warning(f"적재 실패 (범위: {i} ~ {i + chunk -1})")
+        logger.warning(f"   적재 실패 (범위: {i} ~ {i + chunk -1})")
         raise   # 상위 파이프라인에서 처리 예정
     finally:
         conn.close()
@@ -125,7 +125,10 @@ def to_db(df, logger, chunk=CHUNK_SIZE):
     updated = len(rows) - inserted
     time_interval = time.perf_counter() - start
 
-    logger.info(f"적재 완료\n- 신규 {inserted}건\n-갱신 {updated}건\n-시간 {time_interval}")
+    logger.info(f"  적재 완료\n"
+                f"                      - 신규 {inserted}건\n"
+                f"                      - 갱신 {updated}건\n"
+                f"                      - 시간 {time_interval}")
     return inserted, updated, time_interval
 
 def verify(df, logger):
@@ -143,11 +146,11 @@ def verify(df, logger):
 
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT COUNT(*)
+            SELECT COUNT(*),
                    COUNT(DISTINCT code),
                    SUM(close),
                    MIN("date"),
-                   MAX("date"),
+                   MAX("date")
             FROM daily_price
         """)
         row = cur.fetchone()
@@ -162,13 +165,13 @@ def verify(df, logger):
         return str(v.date() if hasattr(v, "date") else str(v))
 
     # {"검증항목명": {df기준_결과, db기준_결과}, ...}
-    checks = [
-        ("행 수", len(df), n),
-        ("종목코드 수", df["code"].nunique(), codes),
-        ("종가 합계", int(df["close"].sum()), int(close_sum)),
-        ("최소 날짜", str(df['date'].min()), to_date_str(min_d)),
-        ("최대 날짜", str(df['date'].max()), to_date_str(max_d)),
-    ]
+    checks = {
+        "행 수": (len(df), n),
+        "종목코드 수": (df["code"].nunique(), codes),
+        "종가 합계": (int(df["close"].sum()), int(close_sum)),
+        "최소 날짜": (str(df['date'].min().date()), to_date_str(min_d)),
+        "최대 날짜": (str(df['date'].max().date()), to_date_str(max_d)),
+    }
 
     all_ok = True
     # exp: expected, act: actual
@@ -176,6 +179,6 @@ def verify(df, logger):
         ok = str(exp) == str(act)
         all_ok &= ok
 
-        logger.info(f"{'OK' if ok else 'FAIL'} {name:<12} {exp} / {act}")
+        logger.info(f"  {'OK' if ok else 'FAIL'} {name:<12} {exp} / {act}")
     
     return all_ok
