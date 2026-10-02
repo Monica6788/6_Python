@@ -187,9 +187,9 @@ print()
 sex_and_pclass = df.copy().groupby(["Sex", "Pclass"])
 survived_rate = round(sex_and_pclass["Survived"].mean(), 2)
 survived_rate_pct = round(sex_and_pclass["Survived"].mean() * 100, 2)
-print(f"생존률\n{survived_rate}")
+print(f"생존율\n{survived_rate}")
 print("-" * 40)
-print(f"생존률(%)\n{survived_rate_pct}")
+print(f"생존율(%)\n{survived_rate_pct}")
 print()
 
 # ===========================================================================
@@ -200,9 +200,9 @@ print()
 agegroup = np_where.copy().groupby("AgeGroup")
 survived_rate = round(agegroup["Survived"].mean(), 2)
 survived_rate_pct = round(agegroup["Survived"].mean() * 100, 2)
-print(f"생존률\n{survived_rate}")
+print(f"생존율\n{survived_rate}")
 print()
-print(f"생존률(%)\n{survived_rate_pct}")
+print(f"생존율(%)\n{survived_rate_pct}")
 print()
 
 # ===========================================================================
@@ -426,7 +426,7 @@ print(f"대치 후 Age 컬럼 결측: {df['Age'].isnull().sum()}개")
      형식으로 작성하면 값이 셀 안에 표시됩니다.
   - 결과를 화면에 출력하지 않고 이미지 파일로 저장하시오. (`savefig` 사용)
 """
-NUM_COLS = ["Survived", "Age", "SibSp", "Parch", "Fare"]
+NUM_COLS = ["Survived", "Pclass", "Age", "SibSp", "Parch", "Fare"]
 pearson = df[NUM_COLS].corr()
 
 fig, ax = plt.subplots(figsize=(10, 10))
