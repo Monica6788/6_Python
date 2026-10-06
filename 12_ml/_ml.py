@@ -66,7 +66,8 @@ def add_features(df, shift_features=True):
     df["ma20_ratio"] = (df["close"] /
                         g["close"].transform(lambda s: s.rolling(20)
                                                         .mean()))
-    df["vol20"] = g["close"].transform(lambda s: s.rolling(20)
+    df["vol20"] = g["close"].transform(lambda s: s.pct_change()
+                                                  .rolling(20)
                                                   .std())
     df["volume_ratio"] = (df["volume"] /
                           g["volume"].transform(lambda s: s.rolling(20)
