@@ -51,6 +51,7 @@ def run(source=SOURCE):
     logger.info(f"  {len(records):,} 건 수집  "
                 f"({time.perf_counter() - t:.1f}초)")
 
+    # failed가 falsy가 아님 -> 빈 list가 아님
     if failed:
         logger.warning(f"   실패 {len(failed):,}건 : {failed}")
 
@@ -69,7 +70,7 @@ def run(source=SOURCE):
     logger.info("[Load]")
 
     try:
-        # inserted, updated, loading time? TODO
+        # inserted, updated, loading time
         ins, upd, lt = load.to_db(df, logger)
     except Exception as e:
         logger.error(f"   적재 실패: {type(e).__name__} : {e}")
@@ -91,5 +92,6 @@ def run(source=SOURCE):
     logger.info("=" * 60)
     return ok
 
+# 메인 메서드처럼 사용하기
 if __name__ == "__main__":
     run()
