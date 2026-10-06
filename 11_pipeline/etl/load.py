@@ -147,34 +147,42 @@ def verify(df, logger):
     with conn.cursor() as cur:
         cur.execute("""
             SELECT COUNT(*),
+            -- 시세 데이터는 코드가 중복된 행이 많으니 DISTINCT로 중복 제거
                    COUNT(DISTINCT code),
                    SUM(close),
                    MIN("date"),
                    MAX("date")
             FROM daily_price
         """)
+        # 전부 집계함수이므로 조회 결과는 1행 -> fetchone()
         row = cur.fetchone()
-    conn.close()
+    conn.close()        # 명시적 close
 
     # 위의 쿼리문 실행 결과를 row라는 튜플로 관리 (DB결과)
     n, codes, close_sum, min_d, max_d = row
 
     def to_date_str(v):
-        """전달된 datetime 데이터의 날짜만 추출하여 문자열로 반환"""
-        # TODO value라서 v?
-        return str(v.date() if hasattr(v, "date") else str(v))
+        """전달된 datetime 데이터(value)의 날짜만 추출하여 문자열로 반환"""
+        # hasattr(v, "date"): 전달받은 v가 "date"라는 속성을 갖는지 여부 반환
+        # "date"라는 속성을 가지면 str(v.date()), 없으면 str(v)
+        return str(v.date()) if hasattr(v, "date") else str(v)
 
-    # {"검증항목명": {df기준_결과, db기준_결과}, ...}
+    # {"검증항목명": (df기준_결과, db기준_결과), ...}
     checks = {
         "행 수": (len(df), n),
         "종목코드 수": (df["code"].nunique(), codes),
+        # 파이썬에서는 type이 다르면 같은 값끼리도 False가 나올 수 있음
+        # => close_sum은 int로 한 번 감싸서 타입을 맞추기.
         "종가 합계": (int(df["close"].sum()), int(close_sum)),
+        # min_d, max_d가 초단위까지 나올 수 있음
+        # => 시간 빼고 날짜만 나오도록 위에 정의한 함수 적용
         "최소 날짜": (str(df['date'].min().date()), to_date_str(min_d)),
         "최대 날짜": (str(df['date'].max().date()), to_date_str(max_d)),
     }
 
     all_ok = True
     # exp: expected, act: actual
+    # checks는 딕셔너리, "name": (expected_value, actual_value) 형태
     for name, (exp, act) in checks.items():
         ok = str(exp) == str(act)
         all_ok &= ok

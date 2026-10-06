@@ -4,8 +4,8 @@
     - 이 파일만 읽어도 어떤 작업이 수행되는지 알 수 있어야 함.
 
     [ETL 파이프라인 구조]
-        Extract -> Transform -> Load -> Verify
-        수집  -> 정제/검증 ->  적재 -> 최종 검증, 확인
+        Extract -> Transform   -> Load    -> Verify
+        (수집)  -> (정제/검증) ->  (적재) -> (최종 검증, 확인)
 """
 import time
 from . import extract, transform, load
