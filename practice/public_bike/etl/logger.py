@@ -27,4 +27,22 @@ def setup(name="pipeline", level=logging.INFO):
         Return.
             설정이 완료된 로거 객체
     """
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    path = os.path.join(LOG_DIR, f"{datetime.now():%Y%m%d}.log")
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.handlers.clear()
+
+    fmt = logging.Formatter("%(asctime)s [%(levelname)-7s] %(message)s", "%H:%M:%S")
+    console = logging.StreamHandler()
+    console.setFormatter(fmt)
+
+    file = logging.FileHandler(path, encoding="utf-8")
+    file.setFormatter(fmt)
+
+    logger.addHandler(file)
+
+    return logger
     

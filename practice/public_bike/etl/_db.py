@@ -22,8 +22,11 @@ NAME = os.getenv("DB_NAME")
 USER = os.getenv("DB_USER")
 PASSWORD = os.getenv("DB_PASSWORD")
 
-# 현재 실행 중인 파일의 폴더 기준, 그 안에 있는 data 폴더의 절대경로 저장
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
+# 현재 실행 중인 파일의 폴더의 상위 폴더 기준,
+#  그 안에 있는 data 폴더의 절대경로 저장
+DATA_DIR = os.path.join(os.path.dirname(
+                        os.path.dirname(
+                        os.path.abspath(__file__))),"data")
 ENCODING = "utf-8-sig"
 
 def connect(autocommit=False):
@@ -46,23 +49,3 @@ def get_engine():
     """SQLAlchemy 엔진을 반환하는 함수"""
     url = f"oracle+oracledb://{USER}:{PASSWORD}@{HOST}:{PORT}/?service_name={NAME}"
     return create_engine(url, pool_pre_ping=True)
-
-def data_path(name):
-    """data 폴더 내의 파일 경로를 반환"""
-    return os.path.join(DATA_DIR, name)
-
-def raw_bikes_path():
-    """자전거 데이터 원본 파일 경로 반환"""
-    # 파일 경로
-    local_path = data_path("raw-bikes.csv")
-    return local_path
-
-def raw_rentals_path():
-    """대여기록 데이터 원본 파일 경로 반환"""
-    local_path = data_path("raw-rentals.csv")
-    return local_path
-
-def stations_path():
-    """대여소 데이터 파일 경로 반환"""
-    local_path = data_path("stations.csv")
-    return local_path
