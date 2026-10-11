@@ -5,6 +5,8 @@
 """
 import os
 
+from _db import connect, get_engine
+
 # --------------------- 환경 변수 기반 설정 ---------------------
 # Extract 방식: "csv"
 SOURCE = os.getenv("PIPELINE_SOURCE", "csv")
