@@ -7,7 +7,7 @@ EXCEPTION
             RAISE;
         END IF;
 END;
-
+/
 
 CREATE TABLE rental_log (
     rental_id VARCHAR2(50) PRIMARY KEY,

@@ -6,8 +6,8 @@ import oracledb
 from step07 import df6
 
 # Oracle DB 접속 정보 설정 (실제 환경에 맞게 수정)
-DB_USER = "write your username"
-DB_PASSWORD = "write your password"
+DB_USER = ""
+DB_PASSWORD = ""
 DB_DSN = "localhost:1521/xe"
 
 def get_connection():
@@ -93,3 +93,5 @@ if __name__ == "__main__":
     print("\t DB 적재 검증 (2회차)")
     load_to_db(df6, 2)
     print("=" * 60)
+
+    df6.to_csv("clean_rentals.csv", index=False, encoding="utf-8-sig")
