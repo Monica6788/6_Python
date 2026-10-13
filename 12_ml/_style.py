@@ -9,7 +9,7 @@ from matplotlib import font_manager
 # os별 기본 한글 폰트
 _CANDIDATES = {
     "Windows": ["Malgun Gothic"],
-    "Darwin": ["AplleGothic"]
+    "Darwin": ["AppleGothic"]
 }
 
 # 그 외의 후보 (리눅스, 도커 등)
@@ -36,8 +36,9 @@ def setup(theme=True):
     if font:
         plt.rcParams["font.family"] = font
         
+    plt.rcParams["figure.dpi"] = 100
+    plt.rcParams["savefig.bbox"] = "tight"
+    
     # 마이너스 표시 설정
     plt.rcParams["axes.unicode_minus"] = False
 
-    plt.rcParams["figure.dpi"] = 100
-    plt.rcParams["savefig.bbox"] = "tight"
